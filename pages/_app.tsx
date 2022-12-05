@@ -6,6 +6,8 @@ import { WalletProvider } from '../contexts/wallet';
 import "../styles/css/main.css";
 import "../styles/css/theme.css";
 import "../styles/sass/app.scss";
+import "../styles/sass/balance.scss";
+
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

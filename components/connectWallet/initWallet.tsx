@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useWallet from '../../contexts/wallet';
-import Spinner from "../spinner/Spinner";
+import Spinner from "../Spinner";
 
 const InitWallet = () => {
     const { connecting, walletNameConnected, connectWallet, walletConnected, wallet, connectedAddress, handlockContrat, handSendAda } = useWallet();
@@ -56,7 +56,7 @@ const InitWallet = () => {
                     <button className="bg-sky-400 w-40 uppercase text-white font-medium rounded-full" onClick={handSendAda}>Send lovelace</button>
                      {walletConnected?JSON.stringify(assets, null, 2):""}
                 </div>
-               
+
             </div>
         </div>
     )

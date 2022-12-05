@@ -7,33 +7,37 @@ import React, {
   ReactNode,
 } from "react";
 import { Asset, BrowserWallet, UTxO, Transaction } from "@martifylabs/mesh";
-import { Console } from "console";
 
 const WalletContext = createContext({
   wallet: {} as BrowserWallet,
   connecting: false,
+  refreshing: false,
   walletNameConnected: '',
   walletConnected: false,
   connectWallet: async (walletName: string) => { },
+  refreshBalance: async () => { },
   handlockContrat: async () => { },
   handSendAda: async () => { },
   connectedAddress: '',
+  formattedAddress: '',
   currentNetwork: '',
-  currentbalence: '',
+  currentbalance: '',
   currentERROR: ''
 });
 
 
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
 
-  const [currentbalence, setBalance] = useState<Asset>();
+  const [currentbalance, setBalance] = useState<Asset>();
 
   const [currentUtxos, setUtxos] = useState<UTxO>({} as UTxO)
   const [wallet, setWallet] = useState<BrowserWallet>({} as BrowserWallet);
   const [walletConnected, setWalletConnected] = useState<boolean>(false);
   const [connecting, setConnecting] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const [walletNameConnected, setWalletNameConnected] = useState<string>("");
   const [connectedAddress, setConnectedAddress] = useState<string>('');
+  const [formattedAddress, setFormattedAddress] = useState<string>('');
   const [currentNetwork, setCurrentNetwork] = useState<string | undefined>(undefined)
   const [currentChangeAddress, setChangeAddress] = useState<string>('')
 
@@ -115,20 +119,21 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       setConnect(false);
     }
   }
+
   const connectWallet = async (walletName: string) => {
     setConnecting(true);
     const _wallet = await BrowserWallet.enable(walletName);
-    const _lovelace = await _wallet.getLovelace();
     const _address = await _wallet.getUsedAddresses();
     const _network = await _wallet.getNetworkId();
-    const _balance = await _wallet.getBalance();
+
     if (_wallet) {
       setWallet(_wallet);
       setWalletNameConnected(walletName);
       setWalletConnected(true);
-      setConnectedAddress(_address[0]);
-      setBalance(_balance[0]);
-      setloveLace(_lovelace);
+      const walletAddress = _address[0]
+      setConnectedAddress(walletAddress);
+      setFormattedAddress(`${walletAddress.substring(0, 12)}...${walletAddress.substring(walletAddress.length - 8)}`)
+
       if (_network == 0) setCurrentNetwork("Testnet");
       if (_network == 1) setCurrentNetwork("Mainnet");
 
@@ -136,6 +141,16 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     setConnecting(false);
   };
 
+  const refreshBalance = async () => {
+    setRefreshing(true)
+    if (wallet) {
+      const _lovelace = await wallet.getLovelace();
+      const _balance = await wallet.getBalance();
+      setBalance(_balance[0]);
+      setloveLace(_lovelace);
+    }
+    setRefreshing(false);
+  };
 
   const memoedValue = useMemo(
     () => ({
@@ -144,17 +159,19 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       walletNameConnected,
       walletConnected,
       connectWallet,
+      refreshBalance,
       handlockContrat,
       handSendAda,
       connectedAddress,
+      formattedAddress,
       currentNetwork,
-      currentbalence,
+      currentbalance,
       currenttxHash,
       currentConnect,
       currentERROR
 
     }),
-    [wallet, walletConnected, connecting, walletNameConnected, connectedAddress, currentNetwork, currentbalence, currenttxHash, currentConnect, currentERROR]
+    [wallet, walletConnected, connecting, walletNameConnected, connectedAddress, currentNetwork, currentbalance, currenttxHash, currentConnect, currentERROR]
   );
 
   return (

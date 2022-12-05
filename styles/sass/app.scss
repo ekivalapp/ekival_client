@@ -379,3 +379,10 @@ body.dark {
     width: 140px;
   }
 }
+.wallet-connector__header {
+  font-style: normal;
+}
+.wallet-connector__wallet-container li.disabled {
+  background-color: var(--dropdown-hover);
+  cursor: not-allowed;
+}
