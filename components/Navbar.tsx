@@ -6,7 +6,7 @@ import { showSwalMessage } from "./../utils/ui-utils";
 import { capitalizeFirstLetter } from './../utils/str-utils';
 
 export default function Navbar() {
-  const { connecting, refreshBalance, formattedAddress, walletNameConnected, walletConnected, connectedAddress, currentNetwork, currentbalance, lockContrat } = useWallet();
+  const { wallet, connecting, refreshBalance, formattedAddress, walletNameConnected, walletConnected, connectedAddress, currentNetwork, currentbalance, lockContrat } = useWallet();
   const [colorTheme, setTheme] = useDarkMode();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
 

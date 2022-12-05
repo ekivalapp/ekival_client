@@ -8,12 +8,19 @@ import React, {
 } from "react";
 import { Asset, BrowserWallet, UTxO, Transaction } from "@martifylabs/mesh";
 
+export type WalletAsset = {
+  assetName: string
+  policyId: string
+  fingerprint: string
+} & Asset
+
 const WalletContext = createContext({
   wallet: {} as BrowserWallet,
   connecting: false,
   refreshing: false,
   walletNameConnected: '',
   walletConnected: false,
+  walletAssets: [] as WalletAsset[],
   connectWallet: async (walletName: string) => { },
   refreshBalance: async () => { },
   handlockContrat: async () => { },
@@ -21,7 +28,7 @@ const WalletContext = createContext({
   connectedAddress: '',
   formattedAddress: '',
   currentNetwork: '',
-  currentbalance: '',
+  currentbalance: null,
   currentERROR: ''
 });
 
@@ -33,6 +40,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const [currentUtxos, setUtxos] = useState<UTxO>({} as UTxO)
   const [wallet, setWallet] = useState<BrowserWallet>({} as BrowserWallet);
   const [walletConnected, setWalletConnected] = useState<boolean>(false);
+  const [walletAssets, setWalletAssets] = useState<WalletAsset[]>([]);
   const [connecting, setConnecting] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [walletNameConnected, setWalletNameConnected] = useState<string>("");
@@ -146,8 +154,10 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     if (wallet) {
       const _lovelace = await wallet.getLovelace();
       const _balance = await wallet.getBalance();
+      const _assets = await wallet.getAssets();
       setBalance(_balance[0]);
       setloveLace(_lovelace);
+      setWalletAssets(_assets);
     }
     setRefreshing(false);
   };
@@ -158,6 +168,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       connecting,
       walletNameConnected,
       walletConnected,
+      walletAssets,
       connectWallet,
       refreshBalance,
       handlockContrat,
@@ -171,7 +182,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       currentERROR
 
     }),
-    [wallet, walletConnected, connecting, walletNameConnected, connectedAddress, currentNetwork, currentbalance, currenttxHash, currentConnect, currentERROR]
+    [wallet, walletConnected, walletAssets, connecting, walletNameConnected, connectedAddress, currentNetwork, currentbalance, currenttxHash, currentConnect, currentERROR]
   );
 
   return (

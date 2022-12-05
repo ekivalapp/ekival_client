@@ -1,13 +1,14 @@
 import Spinner from './../Spinner'
 import useWallet from '../../contexts/wallet';
 import type { Wallet } from '@martifylabs/mesh';
+import type { WalletAsset } from './../../contexts/wallet';
 import { BrowserWallet } from '@martifylabs/mesh';
 import { useEffect, useMemo, useState } from "react";
 
 export default function BalanceCard() {
-  const { refreshing, refreshBalance, walletNameConnected, currentbalance } = useWallet();
+  const { refreshing, refreshBalance, walletAssets, currentbalance } = useWallet();
     const [availableWallets, setAvailableWallets] = useState<Wallet[]>([]);
-
+    const [tEkivalAsset, setEkivalAsset] = useState<WalletAsset>();
 
     useEffect(() => {
       async function init() {
@@ -16,15 +17,19 @@ export default function BalanceCard() {
       init();
     }, []);
 
+    useEffect(() => {
+      if (walletAssets && walletAssets.length > 0) {
+        const tEkival = walletAssets.find(w => w.assetName === 'tekival')
+        if (tEkival) {
+          setEkivalAsset(tEkival)
+        }
+      }
+    }, [walletAssets]);
+
     // On force le wallet en dure pour l'instant
   const currentWallet = useMemo(
     () => availableWallets.find(w => w.name === 'eternl'),
     [availableWallets]
-  );
-
-  const actualBalance = useMemo(
-    () => currentbalance || 0,
-    [currentbalance]
   );
 
   return <>
@@ -42,11 +47,11 @@ export default function BalanceCard() {
           <div className="balance">
             <img src="/images/sphere.jpg" alt="ball" />
             <p>ADA BALANCE</p>
-            <h3>{ actualBalance }</h3>
-            <p>TGIMBAL</p>
-            <h3>00</h3>
+            <h3>{ currentbalance ? currentbalance?.quantity : 0 }</h3>
+            <p>{ tEkivalAsset?.assetName?.toUpperCase() || 'TEKIVAL' }</p>
+            <h3>{ tEkivalAsset?.quantity || 0 }</h3>
             <div onClick={() => refreshBalance()} className="refresh cursor-pointer">
-              { refreshing ? <Spinner v-if="refreshing" /> : (
+              { refreshing ? <Spinner /> : (
                 <svg
                   version="1.1"
                   id="Capa_1"
