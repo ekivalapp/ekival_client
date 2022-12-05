@@ -1,0 +1,144 @@
+.profileDropdown__container {
+  position: relative;
+}
+
+.profileDropdown__button {
+  img {
+    margin-right: 8px;
+    border-radius: 100px;
+    height: 24px;
+    width: 24px;
+  }
+
+  section:first-child {
+    margin-right: 8px;
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--pill-text);
+    height: 100%;
+    width: 100%;
+  }
+
+  .notification {
+    background-color: var(--primary-color);
+    height: 16px;
+    width: 16px;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 10px;
+    line-height: 12px;
+    margin-left: 8px;
+    color: white;
+  }
+}
+
+.profileDropdown__menu {
+  position: absolute;
+  top: 44px;
+  right: 6px;
+  z-index: 1;
+}
+.profileDropdown__dropdown {
+  width: 320px;
+  background-color: var(--card);
+  border: 1px solid var(--divider);
+  border-radius: 12px;
+  padding-bottom: 8px;
+  box-shadow: var(--claims-shadow);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+
+  .banner {
+    position: relative;
+    height: 120px;
+    width: 100%;
+    opacity: 0.9;
+    overflow: hidden;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+
+    img {
+      position: absolute;
+      height: inherit;
+      width: 100%;
+      object-fit: cover;
+      -webkit-filter: blur(3rem);
+      -moz-filter: blur(3rem);
+      -o-filter: blur(3rem);
+      -ms-filter: blur(3rem);
+      filter: blur(3rem);
+    }
+  }
+
+  .icon {
+    height: 92px;
+    width: 92px;
+    border: 4px solid var(--card);
+    border-radius: 100px;
+    margin-top: -60px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .address {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 32px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 32px;
+    cursor: pointer;
+
+    svg {
+      margin-left: 8px;
+      height: 16px;
+      width: 16px;
+    }
+  }
+
+  .menuItems {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .menuButton {
+      background-color: transparent;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 8px 20px;
+      color: var(--pill-text);
+      cursor: pointer;
+      transition: all ease 200ms;
+      text-decoration: none;
+
+      &:hover {
+        background-color: var(--pill-hover);
+      }
+
+      &:active {
+        background-color: var(--pill-active);
+      }
+
+      span {
+        font-size: 16px;
+        line-height: 24px;
+      }
+
+      svg {
+        margin-right: 12px;
+      }
+    }
+  }
+}
