@@ -23,6 +23,7 @@ const WalletContext = createContext({
   walletAssets: [] as WalletAsset[],
   connectWallet: async (walletName: string) => { },
   refreshBalance: async () => { },
+  disconnect: () => { },
   handlockContrat: async () => { },
   handSendAda: async () => { },
   connectedAddress: '',
@@ -35,7 +36,7 @@ const WalletContext = createContext({
 
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
 
-  const [currentbalance, setBalance] = useState<Asset>();
+  const [currentbalance, setBalance] = useState<Asset|null>(null);
 
   const [currentUtxos, setUtxos] = useState<UTxO>({} as UTxO)
   const [wallet, setWallet] = useState<BrowserWallet>({} as BrowserWallet);
@@ -162,15 +163,22 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     setRefreshing(false);
   };
 
+  const disconnect = async () => {
+    setWalletConnected(false);
+    setBalance(null)
+  };
+
   const memoedValue = useMemo(
     () => ({
       wallet,
       connecting,
+      refreshing,
       walletNameConnected,
       walletConnected,
       walletAssets,
       connectWallet,
       refreshBalance,
+      disconnect,
       handlockContrat,
       handSendAda,
       connectedAddress,
@@ -182,7 +190,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       currentERROR
 
     }),
-    [wallet, walletConnected, walletAssets, connecting, walletNameConnected, connectedAddress, currentNetwork, currentbalance, currenttxHash, currentConnect, currentERROR]
+    [wallet, walletConnected, walletAssets, connecting, refreshing, walletNameConnected, connectedAddress, currentNetwork, currentbalance, currenttxHash, currentConnect, currentERROR]
   );
 
   return (

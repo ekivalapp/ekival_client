@@ -1,9 +1,10 @@
 import Spinner from './../Spinner'
 import useWallet from '../../contexts/wallet';
 import type { Wallet } from '@martifylabs/mesh';
-import type { WalletAsset } from './../../contexts/wallet';
 import { BrowserWallet } from '@martifylabs/mesh';
 import { useEffect, useMemo, useState } from "react";
+import { fromLovelace } from "./../../utils/converter";
+import type { WalletAsset } from './../../contexts/wallet';
 
 export default function BalanceCard() {
   const { refreshing, refreshBalance, walletAssets, currentbalance } = useWallet();
@@ -46,8 +47,8 @@ export default function BalanceCard() {
           <p className="text-uppercase wallet-name">WALLET - { currentWallet.name }</p>
           <div className="balance">
             <img src="/images/sphere.jpg" alt="ball" />
-            <p>ADA BALANCE</p>
-            <h3>{ currentbalance ? currentbalance?.quantity : 0 }</h3>
+            <p>ADA BALANCE - { refreshing }</p>
+            <h3>{ currentbalance ? fromLovelace(currentbalance?.quantity) : 0 }</h3>
             <p>{ tEkivalAsset?.assetName?.toUpperCase() || 'TEKIVAL' }</p>
             <h3>{ tEkivalAsset?.quantity || 0 }</h3>
             <div onClick={() => refreshBalance()} className="refresh cursor-pointer">
@@ -58,7 +59,7 @@ export default function BalanceCard() {
                   x="0px"
                   y="0px"
                   viewBox="0 0 458.186 458.186"
-                  style={{ fill: '#fff' }}
+                  style={{ 'fill': '#fff' }}
                 >
                   <g>
                     <g>

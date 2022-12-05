@@ -309,9 +309,9 @@ svg:not(:host).svg-inline--fa {
 @import "publicDelegates.scss";
 
 .swal2-styled.swal2-confirm {
-  background-color: var(--primary-color);
+  background-color: var(--primary-color) !important;
   &:focus {
-    box-shadow: 0 0 0 3px rgb(6 165 250 / 50%);
+    box-shadow: 0 0 0 3px rgb(4 165 250 / 50%) !important;
   }
 }
 .scale-slide-enter-active,

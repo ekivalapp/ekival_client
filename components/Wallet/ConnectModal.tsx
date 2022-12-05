@@ -7,7 +7,7 @@ import { BrowserWallet } from '@martifylabs/mesh';
 import { capitalizeFirstLetter } from '../../utils/str-utils';
 
 export default function ConnectModal({ closeModal }) {
-    const { connecting, walletNameConnected, connectWallet } = useWallet();
+    const { connecting, connectWallet } = useWallet();
     const [availableWallets, setAvailableWallets] = useState<Wallet[]>([]);
 
     const isEnabled = (wallet: Wallet) => {
@@ -23,10 +23,10 @@ export default function ConnectModal({ closeModal }) {
     };
 
     useEffect(() => {
-        async function init() {
-            setAvailableWallets(BrowserWallet.getInstalledWallets());
-        }
-        init();
+      async function init() {
+        setAvailableWallets(BrowserWallet.getInstalledWallets());
+      }
+      init();
     }, []);
 
     return (
