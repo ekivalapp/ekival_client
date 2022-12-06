@@ -14,11 +14,11 @@ function useDarkMode() {
     root.classList.add(theme);
 
     if (typeof window !== "undefined") {
-      localStorage.setItem("theme", theme || 'light');
+      localStorage.setItem("theme", theme);
     }
   }, [theme]);
 
-  return [colorTheme, setTheme];
+  return [theme, setTheme];
 }
 
 export default useDarkMode;

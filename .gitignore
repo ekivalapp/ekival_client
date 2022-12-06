@@ -1,7 +1,13 @@
 .DS_Store
 node_modules
 /dist
-/.next
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
 
 
 # local env files

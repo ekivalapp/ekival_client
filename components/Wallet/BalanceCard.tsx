@@ -10,6 +10,7 @@ export default function BalanceCard() {
   const { refreshing, refreshBalance, walletAssets, currentbalance } = useWallet();
     const [availableWallets, setAvailableWallets] = useState<Wallet[]>([]);
     const [tEkivalAsset, setEkivalAsset] = useState<WalletAsset>();
+    const [o, setModalOpened] = useState<boolean>(false);
 
     useEffect(() => {
       async function init() {
@@ -129,7 +130,7 @@ export default function BalanceCard() {
         </div>
       </div>
     </div>
-    <button className="mybutton">
+    <button className="create-btn">
       <svg
         version="1.1"
         id="Capa_1"
