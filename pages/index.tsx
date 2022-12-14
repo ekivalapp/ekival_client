@@ -1,27 +1,67 @@
 import type { NextPage } from 'next';
 import { useState } from 'react';
+import { Transaction } from '../types';
 import SidePanel from './../components/SidePanel'
+import Order from './../components/Transaction/Order'
 
 const Home: NextPage = () => {
 
-  const [transactions] = useState([
+  const [transactions] = useState<Transaction[]>([
     {
+      id: '1',
       amount: 500,
+      amountInUsd: 500,
+      minimum: 10,
+      location: 'GOMA',
+      paymentMethod: 'CASH',
+      validityInDays: 3,
+      contactName: 'JOHN DOE',
+      contactEmail: 'john@doe.com',
+      contactPhone: '243987654321',
+      expirationTime: 'string',
+      state: 'locked',
     },
     {
-      amount: 300,
-    },
-    {
+      id: '1',
       amount: 500,
+      amountInUsd: 500,
+      minimum: 10,
+      location: 'GOMA',
+      paymentMethod: 'CASH',
+      validityInDays: 3,
+      contactName: 'JOHN DOE',
+      contactEmail: 'john@doe.com',
+      contactPhone: '243987654321',
+      expirationTime: 'string',
+      state: 'locked',
     },
     {
-      amount: 800,
+      id: '1',
+      amount: 500,
+      amountInUsd: 500,
+      minimum: 10,
+      location: 'GOMA',
+      paymentMethod: 'CASH',
+      validityInDays: 3,
+      contactName: 'JOHN DOE',
+      contactEmail: 'john@doe.com',
+      contactPhone: '243987654321',
+      expirationTime: 'string',
+      state: 'locked',
     },
     {
-      amount: 30,
-    },
-    {
-      amount: 100,
+      id: '1',
+      amount: 500,
+      amountInUsd: 500,
+      minimum: 10,
+      location: 'GOMA',
+      paymentMethod: 'CASH',
+      validityInDays: 3,
+      contactName: 'JOHN DOE',
+      contactEmail: 'john@doe.com',
+      contactPhone: '243987654321',
+      expirationTime: 'string',
+      state: 'locked',
     },
   ])
 
@@ -65,26 +105,7 @@ const Home: NextPage = () => {
             </div>
 
             <div className="delegates__cardsContainer">
-              {
-                transactions.map((transaction, idx: number) => (
-                  <div className="delegateCard__container" key={idx}>
-                    <div className="delegateCard__header">
-                      <img
-                        alt="user icon"
-                        className="icon"
-                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAALZJREFUWEdjbJ516j8DEvi1XxOZy8DmeB2FTyqHkHmMow4YDYHREBjwEKiN/IxSDhDK5zKpz/EqeTJbkpARKPKMow4Y8BCYue8WShpAj0P0ukBMRQBvHL+68wFFHr0uQE9DjKMOGPAQIFQQoccZoXxOSD16miLYHiBkIHqKJKR+1AGjITAaAgRDAD1bEWrXU6oeoxyg1EBSHTzqAIwmGXpRil6/k9TgY2BgQG8/oNclow4Y8BAAACmeNShnUhH7AAAAAElFTkSuQmCC"
-                      />
-                      <div style={{ display: 'flex', flexDirection: 'column'}}>
-                        <h3>AMOUNT - { `$${transaction.amount}` }</h3>
-                        <p className="delegateCard__description">LOCATION - GOMA</p>
-                      </div>
-                    </div>
-                    <p className="delegateCard__description">
-                      I have been writing about rollups as a side hobby for a couple of years and curious to see what the governance for a major rollup feels like.
-                    </p>
-                  </div>
-                ))
-              }
+              {transactions.map((transaction: Transaction, i) => <Order key={i} transaction={transaction}/>)}
             </div>
           </div>
 

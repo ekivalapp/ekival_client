@@ -5,6 +5,7 @@ import { BrowserWallet } from '@martifylabs/mesh';
 import { useEffect, useMemo, useState } from "react";
 import { fromLovelace } from "./../../utils/converter";
 import type { WalletAsset } from './../../contexts/wallet';
+import RequestFormModal from './RequestFormModal';
 
 export default function BalanceCard() {
   const { refreshing, refreshBalance, walletAssets, currentbalance } = useWallet();
@@ -35,6 +36,7 @@ export default function BalanceCard() {
   );
 
   return <>
+  <RequestFormModal/>
   <div className="card balance-card">
     {
       currentWallet && (

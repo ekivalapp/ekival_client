@@ -27,16 +27,6 @@ export default function ConnectModal({ closeModal }) {
       }
     }, [selectedWallet]);
 
-    // const selectWallet = (wallet: Wallet) => {
-    //   const walletName = wallet.name
-
-    //   if (isEnabled(wallet)) {
-    //     setCookie('wallet', walletName);
-    //     connectWallet(walletName)
-    //   }
-
-    // };
-
     useEffect(() => {
       async function init() {
         setAvailableWallets(BrowserWallet.getInstalledWallets());

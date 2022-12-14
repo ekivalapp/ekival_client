@@ -392,3 +392,51 @@ body.dark {
 .header-pills__user-settings {
   width: 40px;
 }
+.transaction-form {
+  .delegateModal__container .delegateModal__banner {
+    img {
+      filter: blur(10rem);
+    }
+
+    h2 {
+      text-transform: uppercase;
+    }
+  }
+
+  .optimism-button__container {
+    height: 40px;
+    border-radius: 8px;
+    font-size: 15px;
+  }
+
+  // Base Divider class
+  .divider {
+    display: flex;
+    font-size: 0.8rem;
+
+    &:before,
+    &:after {
+      content: "";
+      flex: 1;
+    }
+  }
+
+  // Base line
+  .line {
+    align-items: center;
+    margin: 1em -1em;
+
+    &:before,
+    &:after {
+      height: 1px;
+      margin: 0 1em;
+    }
+  }
+
+  .one-line {
+    &:before,
+    &:after {
+      background: #d1d5db;
+    }
+  }
+}
