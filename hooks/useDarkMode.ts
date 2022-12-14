@@ -7,16 +7,16 @@ function useDarkMode() {
   );
   const colorTheme = theme === "dark" ? "light" : "dark";
 
-  useEffect(() => {
-    const root = window.document.body;
+  // useEffect(() => {
+  //   const root = window.document.body;
 
-    root.classList.remove(colorTheme);
-    root.classList.add(theme);
+  //   root.classList.remove(colorTheme);
+  //   root.classList.add(theme);
 
-    if (typeof window !== "undefined") {
-      localStorage.setItem("theme", theme);
-    }
-  }, [theme]);
+  //   if (typeof window !== "undefined") {
+  //     localStorage.setItem("theme", theme);
+  //   }
+  // }, [theme]);
 
   return [theme, setTheme];
 }
