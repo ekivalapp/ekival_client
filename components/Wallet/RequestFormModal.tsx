@@ -1,4 +1,45 @@
-export default function RequestFormModal() {
+import type { ModalTrigger, Region, TransactionRequest } from "../../types";
+import { useForm } from "react-hook-form";
+import useAxios from "axios-hooks";
+import { useMemo, useState } from "react";
+import { apiUrl } from "../../config/env";
+import { useRate } from "../../hooks/useRate";
+import { submitTransaction } from "../../lib/transaction";
+
+export default function RequestFormModal({
+  closeModal,
+}: {
+  closeModal: ModalTrigger;
+}) {
+  const {
+    watch,
+    register,
+    setValue,
+    getValues,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TransactionRequest>({
+    defaultValues: {
+      currency: "USD",
+      paymentMethod: "CASH",
+      exchangeRate: 0,
+    },
+  });
+
+  const [rate] = useRate();
+
+  const [{ data }] = useAxios(`${apiUrl}/regions`);
+
+  const amountInAda = watch("amountInAda", 0); // you can supply default value as second argument
+
+  const regions = useMemo<Region[]>(() => data?.data || [], [data]);
+
+  function updateAdaAmount({ target }: { target: HTMLInputElement }) {
+    const val = parseFloat((Number.parseFloat(target.value) / rate).toFixed(3));
+    setValue("amountInAda", val);
+    setValue("exchangeRate", rate);
+  }
+
   return (
     <>
       <div
@@ -6,6 +47,7 @@ export default function RequestFormModal() {
         className="MuiModal-root delegateModal__modal css-8ndowl transaction-form"
       >
         <div
+          onClick={() => closeModal(false)}
           aria-hidden="true"
           className="MuiBackdrop-root css-919eu4"
           style={{
@@ -15,8 +57,8 @@ export default function RequestFormModal() {
         ></div>
         <div data-test="sentinelStart"></div>
         <div className="delegateModal__spacer">
-          <div className="delegateModal__container ">
-            <button className="close">
+          <div className="delegateModal__container  animate__animated animate__zoomIn">
+            <button onClick={() => closeModal(false)} className="close">
               <svg
                 aria-hidden="true"
                 focusable="false"
@@ -41,134 +83,241 @@ export default function RequestFormModal() {
               <h2>Fund the Ekival Contract</h2>
             </div>
             <div className="delegateModal__body container p-4 pt-2 m-0">
-              <div className="row">
-                <div className="col-md-6 mb-2">
-                  <div className="form-group">
-                    <label className="fw-semibold form-label">REGION</label>
-                    <select
-                      placeholder="Select the region"
-                      className="form-select"
-                    >
-                      <option className="py-1 rounded-none"></option>
-                    </select>
-                  </div>
-                </div>
-                <div className="col-md-6 mb-2">
-                  <div className="form-group">
-                    <label className="fw-semibold form-label">
-                      PAYMENT METHOD
-                    </label>
-                    <select className="form-select">
-                      <option className="py-1 rounded-none">cash</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <label className="fw-semibold form-label">
-                      VALIDITY IN DAYS
-                    </label>
-                    <div className="input-group">
-                      <input
-                        placeholder="Validity in days"
-                        className="form-control"
-                      />
-                      <span className="input-group-text">/days</span>
+              <form onSubmit={handleSubmit(submitTransaction)}>
+                <div className="row">
+                  <div className="col-md-6 mb-2">
+                    <div className="form-group">
+                      <label className="fw-semibold form-label">REGION</label>
+                      <select
+                        {...register("location", {
+                          required: true,
+                        })}
+                        placeholder="Select the region"
+                        className="form-select"
+                      >
+                        {regions.map((region, i) => {
+                          return (
+                            <option
+                              key={i}
+                              value={region.id}
+                              className="py-1 rounded-none"
+                            >
+                              {region.designation}
+                            </option>
+                          );
+                        })}
+                      </select>
                     </div>
                   </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <label className="fw-semibold form-label">
-                      MINIMUM AMOUNT (USD)
-                    </label>
-                    <div className="input-group">
-                      <input
-                        placeholder="Minimum amount"
-                        className="form-control"
-                      />
+                  <div className="col-md-6 mb-2">
+                    <div className="form-group">
+                      <label className="fw-semibold form-label">
+                        PAYMENT METHOD
+                      </label>
+                      <select
+                        {...register("paymentMethod", {
+                          required: true,
+                        })}
+                        className="form-select"
+                      >
+                        <option value="CASH" className="py-1 rounded-none">
+                          CASH
+                        </option>
+                      </select>
+                      {errors.paymentMethod && (
+                        <span className="invalid-feedback">
+                          {errors.paymentMethod?.message}
+                        </span>
+                      )}
                     </div>
                   </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-12">
-                  <p className="divider line one-line fw-semibold text-xs">
-                    CONTACT INFOS
-                  </p>
-                </div>
-                <div className="col-md-4">
-                  <div className="form-group">
-                    <label className="fw-semibold form-label">NAME</label>
-                    <div className="input-group">
-                      <input
-                        placeholder="Contact name"
-                        className="form-control"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="form-group">
-                    <label className="fw-semibold form-label">EMAIL</label>
-                    <div className="input-group">
-                      <input
-                        placeholder="Contact email"
-                        className="form-control"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="form-group">
-                    <label className="fw-semibold form-label">NAME</label>
-                    <div className="input-group">
-                      <input
-                        placeholder="Contact name"
-                        className="form-control"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-12">
-                  <p className="divider line one-line fw-semibold text-xs">
-                    AMOUNT TO SEND
-                  </p>
-                  <div className="native-transaction__from">
-                    <div className="native-transaction__input-container m-0">
-                      <input
-                        name="amountInUsd"
-                        type="number"
-                        placeholder="0.0"
-                        min="1"
-                        max="1000"
-                      />
-                      <div className="asset-picker__container">
-                        <button className="asset-picker__select-btn">
-                          <span>USD</span>
-                        </button>
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label className="fw-semibold form-label">
+                        VALIDITY IN DAYS
+                      </label>
+                      <div className="input-group">
+                        <input
+                          {...register("validityInDays", {
+                            required: true,
+                          })}
+                          placeholder="Validity in days"
+                          type="number"
+                          className={
+                            errors.validityInDays
+                              ? "is-invalid form-control"
+                              : "form-control"
+                          }
+                        />
+                        <span className="input-group-text">/days</span>
                       </div>
+                      {errors.validityInDays && (
+                        <span className="invalid-feedback">
+                          {errors.validityInDays?.message}
+                        </span>
+                      )}
                     </div>
-                    <span className="invalid-feedback">
-                      That amount is not valid.
-                    </span>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label className="fw-semibold form-label">
+                        MINIMUM AMOUNT (USD)
+                      </label>
+                      <div className="input-group">
+                        <input
+                          {...register("minimum", {
+                            required: true,
+                          })}
+                          type="number"
+                          placeholder="Minimum amount"
+                          className={
+                            errors.minimum
+                              ? "is-invalid form-control"
+                              : "form-control"
+                          }
+                        />
+                      </div>
+                      {errors.minimum && (
+                        <span className="invalid-feedback">
+                          {errors.minimum?.message}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="row mt-2">
-                <div className="col-md-6">
-                  <button className="optimism-button__container m-0">
-                    Lock
-                  </button>
+                <div className="row">
+                  <div className="col-md-12">
+                    <p className="divider line one-line fw-semibold text-xs">
+                      CONTACT INFOS
+                    </p>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label className="fw-semibold form-label">NAME</label>
+                      <div className="input-group">
+                        <input
+                          {...register("contactName", {
+                            required: true,
+                          })}
+                          placeholder="Contact name"
+                          className={
+                            errors.contactName
+                              ? "is-invalid form-control"
+                              : "form-control"
+                          }
+                        />
+                      </div>
+                      {errors.contactName && (
+                        <span className="invalid-feedback">
+                          {errors.contactName?.message}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label className="fw-semibold form-label">EMAIL</label>
+                      <div className="input-group">
+                        <input
+                          {...register("contactEmail", {
+                            required: true,
+                          })}
+                          placeholder="Contact email"
+                          className={
+                            errors.contactEmail
+                              ? "is-invalid form-control"
+                              : "form-control"
+                          }
+                        />
+                      </div>
+                      {errors.contactEmail && (
+                        <span className="invalid-feedback">
+                          {errors.contactEmail?.message}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label className="fw-semibold form-label">PHONE</label>
+                      <div className="input-group">
+                        <input
+                          {...register("contactPhone", {
+                            required: true,
+                          })}
+                          placeholder="Contact phone"
+                          className={
+                            errors.contactPhone
+                              ? "is-invalid form-control"
+                              : "form-control"
+                          }
+                        />
+                      </div>
+                      {errors.contactPhone && (
+                        <span className="invalid-feedback">
+                          {errors.contactPhone?.message}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div className="col-md-6">
-                  <button className="optimism-button__container optimism-button__secondary m-0">
-                    Cancel
-                  </button>
+                <div className="row">
+                  <div className="col-md-12">
+                    <p className="divider line one-line fw-semibold text-xs">
+                      AMOUNT TO SEND
+                    </p>
+                    <div className="native-transaction__from">
+                      <div className="native-transaction__input-container m-0">
+                        <input
+                          {...register("amount", {
+                            required: true,
+                            onChange: updateAdaAmount,
+                          })}
+                          name="amount"
+                          type="number"
+                          placeholder="0.0"
+                          min="1"
+                          max="1000"
+                          className={
+                            errors.amount
+                              ? "is-invalid form-control"
+                              : "form-control"
+                          }
+                        />
+                        <div className="asset-picker__container">
+                          <span className="asset-picker__select-btn">
+                            {`${amountInAda} ADA`}
+                          </span>
+                        </div>
+                      </div>
+                      {errors.amount && (
+                        <span className="invalid-feedback">
+                          {errors.amount?.message}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
+                <div className="row mt-2">
+                  <div className="col-md-6">
+                    <button
+                      type="submit"
+                      className="optimism-button__container m-0"
+                    >
+                      Lock
+                    </button>
+                  </div>
+                  <div className="col-md-6">
+                    <button
+                      onClick={() => closeModal(false)}
+                      type="reset"
+                      className="optimism-button__container optimism-button__secondary m-0"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
