@@ -22,6 +22,7 @@ export interface Transaction {
 }
 
 export type TransactionRequest =  Omit<Transaction, 'id' | 'expirationTime' | 'state'>;
+export type TransactionMetadata =  Omit<Transaction, 'id' | 'expirationTime' | 'state'>;
 
 export interface Notification {
   title: string;

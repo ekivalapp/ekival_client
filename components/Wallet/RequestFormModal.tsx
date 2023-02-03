@@ -4,7 +4,7 @@ import useAxios from "axios-hooks";
 import { useMemo, useState } from "react";
 import { apiUrl } from "../../config/env";
 import { useRate } from "../../hooks/useRate";
-import { submitTransaction } from "../../lib/transaction";
+import { useTransaction } from "../../hooks/useTransaction";
 
 export default function RequestFormModal({
   closeModal,
@@ -27,10 +27,11 @@ export default function RequestFormModal({
   });
 
   const [rate] = useRate();
+  const [submitTransaction] = useTransaction();
 
   const [{ data }] = useAxios(`${apiUrl}/regions`);
 
-  const amountInAda = watch("amountInAda", 0); // you can supply default value as second argument
+  const amountInAda = watch("amountInAda", 0);
 
   const regions = useMemo<Region[]>(() => data?.data || [], [data]);
 
@@ -99,7 +100,7 @@ export default function RequestFormModal({
                           return (
                             <option
                               key={i}
-                              value={region.id}
+                              value={region.designation}
                               className="py-1 rounded-none"
                             >
                               {region.designation}
