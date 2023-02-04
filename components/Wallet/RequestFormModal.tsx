@@ -5,6 +5,10 @@ import { useMemo, useState } from "react";
 import { apiUrl } from "../../config/env";
 import { useRate } from "../../hooks/useRate";
 import { useTransaction } from "../../hooks/useTransaction";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import type { SubmitHandler } from "react-hook-form";
+import { showSwalMessage, showDialogMessage } from "./../../utils/ui-utils";
 
 export default function RequestFormModal({
   closeModal,
@@ -27,7 +31,7 @@ export default function RequestFormModal({
   });
 
   const [rate] = useRate();
-  const [submitTransaction] = useTransaction();
+  const { processing, submitTransaction } = useTransaction();
 
   const [{ data }] = useAxios(`${apiUrl}/regions`);
 
@@ -35,11 +39,38 @@ export default function RequestFormModal({
 
   const regions = useMemo<Region[]>(() => data?.data || [], [data]);
 
-  function updateAdaAmount({ target }: { target: HTMLInputElement }) {
+  function updateAdaAmount({ target }: { target: Readonly<HTMLInputElement> }) {
     const val = parseFloat((Number.parseFloat(target.value) / rate).toFixed(3));
     setValue("amountInAda", val);
     setValue("exchangeRate", rate);
   }
+
+  const submitForm: SubmitHandler<TransactionRequest> = async (
+    formData: TransactionRequest
+  ) => {
+    try {
+      const txHash = await submitTransaction(formData);
+
+      console.log("txHash", txHash);
+
+      showDialogMessage(
+        () => {
+          closeModal(false);
+        },
+        {
+          title: "Your transaction have been locked to Ekival",
+          message: `Hash: ${txHash}`,
+        }
+      );
+    } catch (error) {
+      console.log("error", error);
+      showSwalMessage(
+        "Transaction cancelled",
+        "You have declined to sign the transaction !",
+        "error"
+      );
+    }
+  };
 
   return (
     <>
@@ -84,7 +115,7 @@ export default function RequestFormModal({
               <h2>Fund the Ekival Contract</h2>
             </div>
             <div className="delegateModal__body container p-4 pt-2 m-0">
-              <form onSubmit={handleSubmit(submitTransaction)}>
+              <form onSubmit={handleSubmit(submitForm)}>
                 <div className="row">
                   <div className="col-md-6 mb-2">
                     <div className="form-group">
@@ -303,9 +334,15 @@ export default function RequestFormModal({
                   <div className="col-md-6">
                     <button
                       type="submit"
-                      className="optimism-button__container m-0"
+                      className={
+                        processing
+                          ? "optimism-button__container m-0 disabled"
+                          : "optimism-button__container m-0"
+                      }
+                      {...(processing && { disabled: true })}
                     >
-                      Lock
+                      {processing ? "Processing..." : "Lock"} &nbsp;
+                      {processing && <FontAwesomeIcon icon={faSpinner} spin />}
                     </button>
                   </div>
                   <div className="col-md-6">

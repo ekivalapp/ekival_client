@@ -9,6 +9,9 @@ import type { AppProps } from "next/app";
 import Navbar from "../components/Navbar";
 import { ApolloProvider } from "@apollo/client";
 import { WalletProvider } from "../contexts/wallet";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+config.autoAddCss = false;
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

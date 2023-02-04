@@ -2,7 +2,7 @@ export type PaymentMethod = "CASH" | "MOBILE";
 
 export type TransactionState = "locked" | "accepted" | "expired" | "cancelled";
 
-export type ModalTrigger = (val: boolean) => void
+export type ModalTrigger = (val: boolean) => void;
 
 export interface Transaction {
   id: string;
@@ -21,8 +21,10 @@ export interface Transaction {
   state?: TransactionState;
 }
 
-export type TransactionRequest =  Omit<Transaction, 'id' | 'expirationTime' | 'state'>;
-export type TransactionMetadata =  Omit<Transaction, 'id' | 'expirationTime' | 'state'>;
+export type TransactionRequest = Omit<
+  Transaction,
+  "id" | "expirationTime" | "state"
+>;
 
 export interface Notification {
   title: string;

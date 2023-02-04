@@ -7,6 +7,7 @@ import { fromLovelace } from "./../../utils/converter";
 import { showSwalMessage } from "./../../utils/ui-utils";
 import type { WalletAsset } from "./../../contexts/wallet";
 import RequestFormModal from "./RequestFormModal";
+import RecentTransactions from "../Transaction/RecentTransactions";
 
 export default function BalanceCard() {
   const {
@@ -108,53 +109,7 @@ export default function BalanceCard() {
             </div>
           </div>
         )}
-        <div className="features">
-          <div className="block-info">
-            <div className="block-image">
-              <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1680531/money.png"
-                alt="paid"
-              />
-            </div>
-            <div className="block-txt">
-              <p>LOCATION - GOMA</p>
-              <span>Deadline - 3 days | Payment - CASH</span>
-            </div>
-            <div className="block-price">
-              <p className="plus">$100</p>
-            </div>
-          </div>
-          <div className="block-info">
-            <div className="block-image">
-              <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1680531/money.png"
-                alt="paid"
-              />
-            </div>
-            <div className="block-txt">
-              <p>LOCATION - GOMA</p>
-              <span>Deadline - 5 days | Payment - CASH</span>
-            </div>
-            <div className="block-price">
-              <p className="plus">$500</p>
-            </div>
-          </div>
-          <div className="block-info">
-            <div className="block-image">
-              <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1680531/money.png"
-                alt="paid"
-              />
-            </div>
-            <div className="block-txt">
-              <p>LOCATION - TORONTO</p>
-              <span>Deadline - 3 days | Payment - CASH</span>
-            </div>
-            <div className="block-price">
-              <p className="plus">$10</p>
-            </div>
-          </div>
-        </div>
+        <RecentTransactions />
         <button onClick={() => newTransaction()} className="create-btn">
           <svg
             version="1.1"

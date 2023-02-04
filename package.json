@@ -11,7 +11,7 @@
   "dependencies": {
     "@apollo/client": "^3.7.0",
     "@chakra-ui/react": "^2.3.4",
-    "@fortawesome/fontawesome-free": "^6.2.0",
+    "@fortawesome/fontawesome-free": "^6.2.1",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/react-fontawesome": "^0.2.0",

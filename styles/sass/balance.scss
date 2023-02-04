@@ -5,6 +5,10 @@ body.dark {
     }
   }
 }
+button.disabled,
+.disabled {
+  opacity: 0.65;
+}
 .balance-card {
   a {
     position: absolute;
