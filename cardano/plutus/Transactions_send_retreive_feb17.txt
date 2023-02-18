@@ -1,0 +1,72 @@
+testnet="testnet-magic 1"
+cardano-cli query tip --$testnet
+
+
+#Set new Address for Testing with commit functionalities
+cardano-cli address build --payment-script-file ekival_v2_feb17.plutus --$testnet --out-file ekival_v2_feb17.addr
+
+
+
+
+
+#Get UTXOs variables
+address=$(cat payment.addr)
+w_address=$(cat eternl.addr)
+s_output="10000000"
+s_address=$(cat ekival_v2_feb17.addr)
+e_address=$(cat eternl.addr)
+e_output="3000000"
+cardano-cli query utxo --address $address --$testnet
+cardano-cli query utxo --address $s_address --$testnet
+
+
+txhash="6c2646f8f1b195b591de693dcc6eeeb35580d069fe901fed2d7679c3e8b926c5"
+txix="0"
+
+#Check the Hash
+
+cardano-cli transaction hash-script-data --script-data-file datum_all_feb17.json >> datum_all_feb17.hash
+
+
+#Prepare Provider transaction
+
+cardano-cli transaction build --babbage-era --$testnet  --tx-in $txhash#$txix  --tx-out $s_address+$s_output  --tx-out-datum-hash 43294021c3c0413ce16c295522e16262070cc3183322fa8f4860313cbbf15a40  --change-address $address --out-file tx_feb17.raw
+
+
+(To add the value: --tx-out-datum-embed-value after having consumed the script utxo)
+
+#Sign off-chain
+
+cardano-cli transaction sign --signing-key-file payment.skey --$testnet --tx-body-file tx_feb17.raw --out-file tx_feb17.signed
+
+#submit
+cardano-cli transaction submit --tx-file tx_feb17.signed --$testnet
+
+##CancelProvider
+#Get Protocol Parameters
+cardano-cli query protocol-parameters --$testnet --out-file protocol.json
+
+#Get reference utxo
+cardano-cli query utxo --address $s_address --cardano-mode --$testnet --out-file dummy-address-ref-script.json
+cat dummy-address-ref-script.json
+
+
+#Cancel Transaction
+
+txin1="b4ecef251723bce8291cc9d5bb346119d78aaa84d687b3c45ddf147e7737c64a#1"
+txin2="b4ecef251723bce8291cc9d5bb346119d78aaa84d687b3c45ddf147e7737c64a#0"
+
+cardano-cli transaction build --babbage-era --$testnet --tx-in "$txin1" --tx-in "$txin2" --tx-in-script-file ekival_v2_feb17.plutus --tx-in-datum-file datum_all_feb17.json --tx-in-redeemer-file redeemer_cp.json  --tx-in-collateral 20d7f89afd18bff870625b4add60ef171f42ba0fae818f08f40beb8397f53c8f#1 --required-signer-hash 33f68ec7c67e3d4f037807fd4c67469f4937202bf36c1fe0bbf5b8af --tx-out $e_address+$e_output --tx-out $address+20000000 --change-address $address --protocol-params-file protocol.json --out-file tx_cp_feb17.body
+
+
+
+
+#Sign off-chain
+
+cardano-cli transaction sign --signing-key-file payment.skey --$testnet --tx-body-file tx_cp_feb17.body --out-file tx_cp_feb17.signed
+
+#submit
+
+cardano-cli transaction submit --tx-file tx_cp_feb17.signed --$testnet
+
+
