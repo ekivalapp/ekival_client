@@ -1,0 +1,33 @@
+testnet="testnet-magic 1"
+
+#Utiliser l'addresse d'un contrat
+
+plutusscriptinuse="ekival_v2_feb17.plutus"
+s_address=$(cat ekival_v2_feb17.addr)
+s_output="23232323"
+address=$(cat payment.addr)
+
+txin="8ddf556597aab1098144c990e8ab29824bc3e25f287f458fd4cc4f9a67454ce6#1"
+
+
+
+#Envoi avec le Script reference
+
+cardano-cli transaction build --babbage-era --$testnet --change-address $address --tx-in $txin --tx-out $address+$s_output --tx-out-reference-script-file $plutusscriptinuse --tx-out $s_address+$s_output --tx-out-inline-datum-file datum_all_feb17.json --protocol-params-file protocol.json --out-file tx_feb18.draft
+
+cardano-cli transaction sign --signing-key-file payment.skey --$testnet --tx-body-file tx_feb18.draft --out-file tx_feb18.signed
+cardano-cli transaction submit --tx-file tx_feb18.signed --$testnet
+
+#Récupérer
+cons="b38a0ee73bb29ee8e1ce83444420993d90b8d9a2e8077d82a4f966ee8a6606a3#0"
+payant="4d8d376f575dd15fcf2bd5e71f3ce5aa5adad511d63b0a4927e4f4b1530649da#1"
+collateral="1ff7e425916e81b55d149c5df14da9bd770e42f9688511aad40aca801dd91725#0"
+s_ref="f88d75f2f6f13b2a0fbc0fd016905620bc2634481bf6015cdf999570a04dacfa#0"
+e_address=$(cat eternl.addr)
+e_output="3000000"
+
+cardano-cli transaction build --babbage-era --$testnet --tx-in $payant --tx-in-collateral $collateral --tx-in $cons --spending-tx-in-reference $s_ref --spending-plutus-script-v2 --spending-reference-tx-in-inline-datum-present --spending-reference-tx-in-redeemer-file redeemer_cp.json --required-signer-hash 33f68ec7c67e3d4f037807fd4c67469f4937202bf36c1fe0bbf5b8af --tx-out $e_address+$e_output --tx-out $address+20000000  --change-address $address --protocol-params-file protocol.json --out-file tx_v2_feb18.body
+
+cardano-cli transaction sign --signing-key-file payment.skey --$testnet --tx-body-file tx_v2_feb18.body --out-file tx_v2_feb18.signed
+
+cardano-cli transaction submit --tx-file tx_v2_feb18.signed --$testnet
